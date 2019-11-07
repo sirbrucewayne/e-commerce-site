@@ -1,0 +1,22 @@
+{
+  "name": "e-commerce-site",
+  "version": "1.0.0",
+  "description": "adbms project using nodeJs and Mongoose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "e-commerce-site"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs",
+    "MongoDB",
+    "mongoose",
+    "e-commerce"
+  ],
+  "author": "Vamsi, Jagan",
+  "license": "MIT"
+}
