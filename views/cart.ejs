@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Online Shopping</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function(){
+$("body").delegate(".qty","change",function(){
+		var pid = $(this).attr("pid");
+		var qty = $("#qty-"+pid).val();
+		var price = $("#price-"+pid).val();
+		var total = qty * price;
+		$("#amt-"+pid).val(total);
+		$("#"+pid).submit();
+	})
+  })
+</script>
+</head>
+<body>
+	<div class="navbar navbar-default navbar-fixed-top" id="topnav">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a href="index.php" class="navbar-brand">Online Shopping</a>
+			</div>
+
+
+
+		</div>
+	</div>
+	<p><br><br></p>
+	<p><br><br></p>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-8">
+			<div class="row">
+				<div class="col-md-12" id="cart_msg"></div>
+			</div>
+				<div class="panel panel-primary text-center">
+					<div class="panel-heading">Cart Checkout</div>
+					<div class="panel-body"></div>
+					<div class="row">
+						<div class="col-md-2"><b>Action</b></div>
+						<div class="col-md-2"><b>Product Name</b></div>
+						<div class="col-md-2"><b>Product Price</b></div>
+						<div class="col-md-2"><b>Quantity</b></div>
+						<div class="col-md-2"><b>Price in $</b></div>
+					</div>
+					<br><br>
+					<div id='cartdetail'>
+					</div>
+					<div class="panel-footer">
+
+					</div>
+				</div>
+				<% if(cartInfo != null) { %> 
+				<div class="category">
+				<% for(var i=0;i < cartInfo.products.length;i++) { %> 
+					<div style="">
+						<div>
+							<div><b><%= cartInfo.products[i].pname %></b></div>
+							<div><input class="price" type='text' pid="<%= cartInfo.products[i]._id %>" id="price-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].price %>" disabled></div>
+							<form id="<%= cartInfo.products[i]._id %>" action="/home/updateqty" method="get" >
+
+							<div><input class="qty" type='text' pid="<%= cartInfo.products[i]._id %>" id="qty-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].quantity %>" name="qty" ></div>
+<div><input class="pid" type='text' value="<%= cartInfo.products[i]._id %>" name="pid"></div>
+							</form>
+							<div><input class="price" type='text' pid="<%= cartInfo.products[i]._id %>" id="amt-<%= cartInfo.products[i]._id %>" value="<%= parseInt(cartInfo.products[i].price)*parseInt(cartInfo.products[i].quantity)  %>" disabled></div>
+						</div>	
+					</div>
+					
+				<% } %>
+				</div>
+				<% } %>
+
+				<button class='btn btn-success btn-lg pull-right' id='checkout_btn' data-toggle="modal" data-target="#myModal">Checkout</button>
+			</div>
+
+			<div class="col-md-2"></div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -130,8 +130,11 @@
 		<div id="sidenav">
 			<img src="/productImages/<%= product.image %>" style="width:35vw;height:60vh;">
             <<div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
-                <button class="selIcon" style="">ADD TO CART</button>
+<form action="/home/cartadd" method="get" >
+                <input type="submit" class="selIcon" name="product" value="<%= product.name %>" style="">ADD TO CART</button>
+</form>
                 <button class="selIcon" style="">BUY NOW</button>
+
             </div>
             
 		</div>

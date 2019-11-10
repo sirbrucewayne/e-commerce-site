@@ -77,6 +77,13 @@ const brandSchema=mongoose.Schema({
 });
 var brandModelRef=mongoose.model("brandModel",brandSchema);
 
+/*Cart schema*/
+const cartSchema=mongoose.Schema({
+	email:String,
+	products:[{pname:String,price:String,quantity:Number}]
+});
+var cartModelRef=mongoose.model("cartModel",cartSchema);
+
 /*product schema */
 const productSchema=mongoose.Schema({
 	name:String,
@@ -114,6 +121,15 @@ app.use(session({
 app.get('/',function(req,res){
 	res.render('start');
 });
+
+app.get('/home/cart',async function(req,res){
+	let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
+	console.log(cartInfo);
+	res.render('cart',{
+	cartInfo:cartInfo
+	});
+});
+
 
 app.get('/home',async function(req,res){
 	if(req.session.user&&req.session){
@@ -278,10 +294,7 @@ app.post('/dashboard/subcategory',urlencodedParser,async function(req,res){
 
 	var catTitle=req.body.category;
 	var catId=await catModelRef.findOne({title:catTitle}).select('_id');
-	var subcatObj=new subcatModelRef({
-		title:req.body.subcategory,
-		catid:catId._id
-	});
+	
 	var subcatId=await catModelRef.findOne({title:catTitle}).select('subCat -_id');
 		var len=subcatId.subCat.length;		
 		var newsubcat={subcatid:len,title:req.body.subcategory}
@@ -311,11 +324,8 @@ app.post('/dashboard/subbrand',urlencodedParser,async function(req,res){
 
 	var brandTitle=req.body.brand;
 	var brandId=await brandModelRef.findOne({title:brandTitle}).select('_id');
-	var brandcatObj=new subbrandModelRef({
-		title:req.body.subbrand,
-		brandid:brandId._id
-	});
-	var subbrandId=await brandModelRef.findOne({title:brandTitle}).select('sub -_id');
+	
+	var subbrandId=await brandModelRef.findOne({title:brandTitle}).select('subBrand -_id');
 		var len=subbrandId.subBrand.length;		
 		var newsubbrand={subbrandid:len,title:req.body.subbrand}
 		
@@ -327,6 +337,59 @@ app.post('/dashboard/subbrand',urlencodedParser,async function(req,res){
 		});
 	
 });
+
+app.get('/home/cartadd',async function(req,res){
+	let product=await productModelRef.find({name:req.query.product});
+	var uid=req.session.user.email;
+console.log(product.price);
+console.log(product);
+	cartModelRef.findOne({email:uid},function(err,result){
+		if(!result){
+			var cartObj=new cartModelRef({
+			email:uid,
+			products:[{pname:req.query.product,price:product[0].price,quantity:1}]
+			});
+			cartObj.save(function(err,cartModel){
+				if(err){
+				throw err;
+				}else{
+				res.redirect('/home');
+				}
+			});	
+		}else{
+		    var newcart={pname:req.query.product,price:product[0].price,quantity:1}			
+		    cartModelRef.findOneAndUpdate({email:uid},{$push:{products:newcart}},function(err,cartModel){
+			if(err) throw err;
+			else{
+				res.redirect('/home');	
+			}
+		    });
+		}	
+        });
+});
+
+app.get('/home/updateqty',async function(req,res){
+	var uid=req.session.user.email;
+	console.log(req.query.qty);
+	console.log(req.query.pid);
+	let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
+	console.log(cartInfo);
+	for(var i=0;i<cartInfo.products.length;i++){
+		if(cartInfo.products[i]._id==req.query.pid){
+			cartInfo.products[i].quantity=req.query.qty;
+		}
+	}
+	console.log(cartInfo);
+	cartModelRef.findOne({email:uid},function(err,result){			
+		cartModelRef.updateOne({email:uid},{$set:{products:cartInfo.products}},{new: true},function(err,cartModel){
+			if(err) throw err;
+			else{
+				res.redirect('/home');	
+			}
+		});
+        });
+});
+
 
 var Imagename="default";
 app.post('/dashboard/product',urlencodedParser,function(req,res){
