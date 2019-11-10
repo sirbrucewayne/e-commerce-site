@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>start</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <style type="text/css">
+    	#header{
+    		position: fixed;
+    		width: 100vw;
+    		height:3%;
+    		background:black;
+    	}
+    </style>
+</head>
+<body>
+	<div id="header">
+		<p style="color: white">Hello <%= adminName%></p> 
+	</div>	<br>
+	<p>Add Category</p>
+    <div>
+    	<form action="/dashboard/category" method="POST">
+    		<input type="text" name="category" placeholder="category">
+            <button type="submit" name="sbtCat">Add Category</button>
+    	</form>
+   	</div><br>
+   	<!-- <p id="catList" style="color: red">sjakddd<%= parentCategories[0].title %></p><br> -->
+   	 <div>
+    	<form action="/dashboard/subcategory" method="POST">
+    		<input type="text" name="subcategory" placeholder="category">
+    		<input type="text" name="category" placeholder="parent category">
+    		<datalist id="catList"></datalist>
+            <button type="submit" name="sbtCat">Add sub-category</button>
+    	</form>
+   	</div><br>
+   	<p>Add Brands</p>
+    <div>
+    	<form action="/dashboard/brand" method="POST">
+    		<input type="text" name="brand" placeholder="brand">
+            <button type="submit" name="sbtBrand">Add Brand</button>
+    	</form>
+   	</div><br>
+   	 <div>
+    	<form action="/dashboard/subbrand" method="POST">
+    		<input type="text" name="subbrand" placeholder="brand">
+    		<input type="text" name="brand" placeholder="parent brand">
+    		<datalist id="brandList"></datalist>
+            <button type="submit" name="sbtBrand">Add sub-brand</button>
+    	</form>
+   	</div><br>
+    <p>Add Products</p>
+    <div>
+    	<form action="/dashboard/product" method="POST">
+    		<input type="text" name="name" placeholder="name"><br>
+    		<textarea type="text" name="description" placeholder="description"></textarea><br>
+    		<input type="float" name="price" placeholder="price(INR)"><br>
+    		size-s<input type="checkbox" name="size_s" value="S">
+    		size-m<input type="checkbox" name="size_m" value="M">
+    		size-l<input type="checkbox" name="size_l" value="L">
+    		size-xl<input type="checkbox" name="size_xl" value="XL">
+    		size-uk8<input type="checkbox" name="size_eight" value="UK8">
+    		size-uk9<input type="checkbox" name="size_nine" value="UK9">
+    		size-uk10<input type="checkbox" name="size_ten" value="UK10">
+    		size-uk11<input type="checkbox" name="size_eleven" value="UK11"><br>
+    		<input type="text" name="keywords" placeholder="keywords"><br>
+    		<input type="text" name="category" placeholder="Category">
+    		<datalist id="categoryList"></datalist>
+    		<input type="text" name="subcategory" placeholder="Sub-category">
+    		<datalist id="subcatList"></datalist>
+    		<input type="text" name="brand" placeholder="brand">
+    		<datalist id="brandsList"></datalist><br>
+    		<button type="submit" name="sbtPro">Add Product</button>
+    	</form>
+    	<form action="/dashboard/proimage" method="POST" enctype="multipart/form-data">
+    		<input type="file" name="image" onchange="form.submit()"> 
+    	</form>
+    </div>
+</body>
+<script type="text/javascript">
+	var  n = "<%= adminName %> ";
+	var arr=  JSON.parse('<%- JSON.stringify(parentCategories) %>');
+	var options='';
+	for(var i=0;i<arr.length;i++){
+		options+='<option value="'+arr[i].title+'"/>';
+	}
+	document.getElementById("catList").innerHTML = options;
+
+	var arr2=  JSON.parse('<%- JSON.stringify(parentBrands) %>');
+	var options2='';
+	for(var i=0;i<arr2.length;i++){
+		options2+='<option value="'+arr2[i].title+'"/>';
+	}
+	document.getElementById("brandList").innerHTML = options2;
+
+	document.getElementById("categoryList").innerHTML = options;
+	document.getElementById("brandsList").innerHTML = options2;
+	var opt='';
+	for(var i=0;i<arr.length;i++){
+		opt+='<option value="'+arr[i].subCat.title+'"/>';
+	}
+	document.getElementById("subcatList").innerHTML = opt;
+
+
+</script>
+</html>

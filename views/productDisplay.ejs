@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>start</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <style type="text/css">
+    	#header{
+    		position: fixed;
+    		width: 100vw;
+    		height:8vh;
+    		background-color:#3CB371;
+    	}
+    	#searchbox{
+    		position: relative;
+    		left:20%;
+    		top:20%;
+    		width:40%;
+    		height:60%;
+    		background-color:white;
+    	}
+    	#searchInput{
+    		position: relative;
+    		left:0%;
+    		top:0%;
+    		width:100%;
+    		height:100%;
+    	}
+    	#logout,#usericon,#cart{
+    		position: absolute;
+    		margin-left: 85vw;
+    		margin-top:-2.5vh;
+    		color:black;
+    		font-size:2.2vmin;
+    		z-index: +1;
+    		border: none;
+    		background-color: #3CB371;
+    		color: white;
+    		font-weight: bold;
+    	}
+    	#cart{
+    		margin-left: 80vw;
+    	}
+    	#usericon{
+    		margin-left: 70vw;
+    	}
+    	#main{
+    		position: absolute;
+    		top:9vh;
+    		width:100vw;
+    		background-color:#f2f2f2;
+            display:flex;
+            flex-wrap:wrap;
+    	}
+    	#sidenav{
+    		position: relative;
+    		float: left;
+    		margin-top:0.5%;
+    		margin-bottom:0.5%;
+    		left:3%;
+    		width:38vw;
+    		background-color:white;
+    	}
+    	#mainnav{
+    		position: relative;
+    		margin-top:0.5%;
+    		margin-bottom:0.5%;
+    		left:4%;
+    		width:55%;
+    		background-color:white;
+    		display: flex;
+    		flex-wrap: wrap;
+    	}
+    	.selIcon{
+            position: relative;
+            border:none;
+            font-weight: bold;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size:130%;
+            width:45%;
+            margin:2%;
+            padding:1%;
+            background-color: #3CB371;
+            color:white;
+        }
+    	#mainnav > p:nth-child(1){
+            position:relative;
+            width:100%;
+            background-color:red;
+            font-family: Georgia, serif;
+            font-weight:bold;
+            padding:2%;
+            font-size:160%;
+        }
+        #mainnav > p:nth-child(2){
+            position:relative;
+            width:100%;
+            background-color:yellow;
+            font-family: Georgia, serif;
+            font-weight:bold;
+            padding:2%;
+            font-size:100%;
+        }
+    	*:focus{
+        outline:none;
+       }
+       body{
+        overflow-x: hidden;
+        scroll-behavior:smooth;
+       }
+    </style>
+</head>
+<body>
+	<div id="header">
+		<form id="searchbox" action="/dashboard/idontknow" method="GET">
+	 		<input id="searchInput" type="text" name="searchParam" placeholder="Search for products, brands and more ">
+	 	</form>
+	 	<!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
+	 	<button id="cart" onclick="location.href='/home/cart'">Cart</button>
+		<button id="logout" onclick="location.href='/logout'">Logout</button>
+
+		<p id="usericon">Hello, <%= userName %></p> 
+	</div>
+	<div id="main">
+		<div id="sidenav">
+			<img src="/productImages/<%= product.image %>" style="width:35vw;height:60vh;">
+            <<div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
+                <button class="selIcon" style="">ADD TO CART</button>
+                <button class="selIcon" style="">BUY NOW</button>
+            </div>
+            
+		</div>
+		<div id="mainnav">
+			<p ><%= product.name %></p>
+            <p><%= product.description %></p>
+		</div>
+	</div>
+	
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		
+	})
+
+</script>
+</html>
