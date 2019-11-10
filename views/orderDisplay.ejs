@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>start</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <style type="text/css">
+        #header{
+            position: fixed;
+            width: 100vw;
+            height:8vh;
+            background-color:#3CB371;
+        }
+        #logout,#usericon,#cart{
+            position: absolute;
+            margin-left: 85vw;
+            margin-top:2vh;
+            color:black;
+            font-size:2.2vmin;
+            border: none;
+            background-color: #3CB371;
+            color: white;
+            font-weight: bold;
+        }
+        #cart{
+            margin-left: 80vw;
+        }
+        #usericon{
+            margin-left: 70vw;
+        }
+        #main{
+            position: absolute;
+            top:9vh;
+            width:100vw;
+            background-color:#f2f2f2;
+            display:flex;
+            flex-wrap:wrap;
+        }
+        #sidenav{
+            position: relative;
+            float: left;
+            margin-top:0.5%;
+            margin-bottom:0.5%;
+            left:10%;
+            width:48vw;
+            height:80vh;
+            background-color:white;
+        }
+        #mainnav{
+            position: relative;
+            margin-top:0.5%;
+            margin-bottom:0.5%;
+            left:11%;
+            width:30vw;
+            background-color:white;
+        }
+        #loginCheck{
+            position: relative;
+            width:100%;
+            height:15%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+        #addressCheck{
+            position: relative;
+            width:100%;
+            height:15%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+         #orderCheck{
+            position: relative;
+            width:100%;
+            height:35%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+        #sizeCheck{
+            position: relative;
+            width:100%;
+            height:8%;
+            padding:2%;
+            border-bottom:2px solid lightgrey;
+        }
+        #qtyCheck{
+            position: relative;
+            width:100%;
+            height:9%;
+            padding:2%;
+            border-bottom:2px solid lightgrey;
+        }
+        #payCheck{
+            position: relative;
+            width:100%;
+            height:8%;
+            padding:2%;
+            border-bottom:2px solid lightgrey;
+        }
+        #placeOrder{
+            position: relative;
+            border:none;
+            font-weight: bold;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size:130%;
+            width:45%;
+            left:25%;
+            margin:2%;
+            padding:1%;
+            background-color: #3CB371;
+            color:white;
+            border-bottom:0.1px solid lightgrey;
+        }
+        #mainnav > p{
+            position: relative;
+            width:100%;
+            height:10%;
+            padding:3%;
+        }
+        #mainnav > p:nth-child(1){
+            color:darkgrey;
+            font-size:140%;
+            font-weight:bold;
+            border-bottom:1px solid lightgrey;
+        }
+        #mainnav > p:nth-child(2){
+            color:black;
+            padding:3%;
+            font-size:120%;
+        }
+        #mainnav > p:nth-child(3){
+            color:black;
+            padding:3%;
+            font-size:120%;
+            border-bottom:1px dotted lightgrey;
+        }
+        #mainnav > p:nth-child(4){
+            color:black;
+            padding:3%;
+            font-size:120%;
+            border-bottom:1px solid lightgrey;
+        }
+        *:focus{
+        outline:none;
+       }
+       body{
+        overflow-x: hidden;
+        scroll-behavior:smooth;
+       }
+    </style>
+</head>
+<body>
+    <div id="header">
+        
+        <!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
+        <button id="logout" onclick="location.href='/logout'">Logout</button>
+    </div>
+    <div id="main">
+        <div id="sidenav">
+            <div id="loginCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>LOGIN</b><br>
+                    <span style="font-size:90%;font-family:monospace;color:black;color:#3CB371;font-weight:bold;"><%= userInfo.name %>   </span>
+                </p>
+            </div>
+            <div id="addressCheck">
+               <p style="font-size:120%;color:darkgrey;"><b>DELIVERY ADDRESS</b><br>
+                    <span style="font-size:90%;font-family:monospace;color:black;color:#3CB371;font-weight:bold;"><%= userInfo.address %>   </span>
+                </p>
+            </div>
+            <div id="orderCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>ORDER SUMMARY</b></p>
+                <div style="display:flex">
+                    <img src="/productImages/<%= product.image %>" style="width:100px;height:100px;">
+                    <div style="font-size:90%;font-family:monospace;color:black;margin-left:10%;color:#3CB371;font-weight:bold;">
+                        <p ><%= product.name %></p>
+                        <p>Rs. <%= product.price %></p>
+                        <p><%= product.description %></p>
+                    </div>
+                </div>
+            </div>
+            <div id="sizeCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>SIZE :</b>
+                <span><select id="selSize" style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;">
+                    <% for(var i=0;i< product.size.length;i++) { %>
+                        <option><%= product.size[i] %></option>
+                    <% } %>
+                </select></span>
+                </p>
+            </div>
+            <div id="qtyCheck">
+                 <p style="font-size:120%;color:darkgrey;"><b>QUANTITY :</b>
+                <input style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;" id="selQty" type="number" name="qty" min="1" max="100" value="1" onchange="payCal()">
+            </div>
+            <div id="payCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>PAYMENT OPTIONS :</b>
+                <select id="payMode" style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;">
+                    <option>Cash On Delivery</option>
+                </select>
+            </div>
+            <div>
+                <form id="order" action="/home/buyproduct/order" method="post">
+                    <input id="fpname" type="hidden" name="pname" value="<%= product.name %>">
+                    <input id="fqty" type="hidden" name="qty" value="1">
+                    <input id="fsize" type="hidden" name="size" value="">
+                    <input id="ftot" type="hidden" name="total" value="">
+                </form>
+                <button id="placeOrder" >PLACE ORDER</button>
+            </div>
+            <!--  -->
+            
+        </div>
+        <div id="mainnav">
+            <p >PRICE DETAILS : </p>
+            <p>Price ( <span id="finalQty">1 </span> item ) <span style="margin-left:45%;" class="finalPrice">Rs.<%= product.price %></span></p>
+            <p><span>Delivery Charges </span><span style="margin-left:45%;">FREE</span></p>
+            <p><span>Total Payable </span><span style="margin-left:47%">Rs.</span><span  class="finalPrice" id="totAmt"><%= product.price %></span></p>
+        </div>
+    </div>
+    
+</body>
+<script type="text/javascript">
+    function payCal(){
+        var s=document.getElementById("selSize");
+        s=s.options[s.selectedIndex].value;
+        var q=document.getElementById("selQty").value;
+        var payMode=document.getElementById("payMode");
+        payMode=payMode.options[payMode.selectedIndex].value;
+        //console.log(s,q,payMode);
+        var price= <%= product.price %>;
+        var tot=parseInt(price)*parseInt(q);
+        //console.log(tot);
+        document.getElementById("finalQty").innerHTML=q;
+        var y=document.getElementsByClassName("finalPrice");
+        y[0].innerHTML="Rs."+tot;
+        y[1].innerHTML=+tot;
+
+    }
+    $(document).ready(function(){
+        $("#placeOrder").click(function(){
+            var q=$("#finalQty").text();
+            var s=$("#selSize").val();
+            var price=$("#totAmt").text();
+            //console.log(q,s,price);
+            $("#fqty").val(q);
+            $("#fsize").val(s);
+            $("#ftot").val(price);
+            $("#order").submit();
+        })
+    })
+
+</script>
+</html>

@@ -73,8 +73,6 @@
     		left:4%;
     		width:55%;
     		background-color:white;
-    		display: flex;
-    		flex-wrap: wrap;
     	}
     	.selIcon{
             position: relative;
@@ -88,24 +86,42 @@
             background-color: #3CB371;
             color:white;
         }
-    	#mainnav > p:nth-child(1){
+        #mainnav > p {
             position:relative;
             width:100%;
-            background-color:red;
             font-family: Georgia, serif;
-            font-weight:bold;
-            padding:2%;
+            padding:1%;
+            padding-left:3%;
             font-size:160%;
         }
-        #mainnav > p:nth-child(2){
-            position:relative;
-            width:100%;
-            background-color:yellow;
-            font-family: Georgia, serif;
-            font-weight:bold;
-            padding:2%;
-            font-size:100%;
+    	#mainnav > p:nth-child(1){
+            font-size:160%;
+            height:10%;
+            font-weight: bold;
         }
+        #mainnav > p:nth-child(2){
+            font-size:180%;
+            height:10%;
+            font-weight: bold;
+        }
+         #mainnav > p:nth-child(3){
+            font-family:monospace;
+            font-size:100%;
+            color:#3CB371;
+            height:15%;
+        }
+        #mainnav > p:nth-child(4){
+            font-size:120%;
+            height:30%;
+        } 
+        #mainnav > p:nth-child(5){
+            font-size:140%;
+            height:10%;        }
+        #mainnav > p:nth-child(6){
+            font-size:140%;
+            height:;
+        }
+        
     	*:focus{
         outline:none;
        }
@@ -129,18 +145,46 @@
 	<div id="main">
 		<div id="sidenav">
 			<img src="/productImages/<%= product.image %>" style="width:35vw;height:60vh;">
+<<<<<<< HEAD
             <<div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
 <form action="/home/cartadd" method="get" >
                 <input type="submit" class="selIcon" name="product" value="<%= product.name %>" style="">ADD TO CART</button>
 </form>
                 <button class="selIcon" style="">BUY NOW</button>
 
+=======
+            <div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
+                <button class="selIcon" style="">ADD TO CART</button>
+                <form action="/home/buyproduct" method="get" >
+                    <input type="hidden" name="product" value="<%= product.name %>">
+                    <button class="selIcon" type="submit">BUY NOW</button>
+                </form>
+>>>>>>> e6e7f02712279ab7e25fbc7fcc103a8260314534
             </div>
             
 		</div>
 		<div id="mainnav">
-			<p ><%= product.name %></p>
+			2<p ><%= product.name %></p>
+            <p>Rs. <%= product.price %></p>
             <p><%= product.description %></p>
+            <p><b>Available Offers:</b> <br>
+                
+                    Bank Offer 10% Instant Discount on Mastercard on Fashion for First 3 Prepaid Payments T&C <br>
+                    Bank Offer 5% Unlimited Cashback on Flipkart Axis Bank Credit Card T&C <br>
+                    Bank Offer Extra 5% off* with Axis Bank Buzz Credit Card T&C <br>
+                    Special Price Get extra 5% off (price inclusive of discount) T&C
+                
+            </p>
+            <p><b>Size :</b>
+                <% for(var i=0;i< product.size.length;i++) { %>
+                    <span><%= product.size[i] %></span>
+                <% } %>
+            </p>
+            <p><b>Tags :</b>
+                <% for(var i=0;i< product.keywords.length;i++) { %>
+                    <span><%= product.keywords[i] %></span>
+                <% } %>
+            </p>
 		</div>
 	</div>
 	
