@@ -115,7 +115,7 @@
 </head>
 <body>
 	<div id="header">
-		<form id="searchbox" action="/dashboard/idontknow" method="GET">
+		<form id="searchbox" action="/home/search" method="GET">
 	 		<input id="searchInput" type="text" name="searchParam" placeholder="Search for products, brands and more ">
 	 	</form>
 	 	<!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
@@ -131,7 +131,7 @@
 				<% for(var i=0;i < parentCategories.length;i++) { %> 
 					<div style="">
 						<div>
-							<div style="position:relative;float:left;width:100%;background-color:white;text-align:center;padding:2%;border:1px solid lightgrey">
+							<div style="position:relative;float:left;width:100%;background-color:white;text-align:center;padding:2%;border-top:1px solid #3CB371;border-bottom:1px solid #3CB371;color:#3CB371;font-weight:bold;">
 								<form action="/home/category" method="post">
 									<input style="border:none;background-color:white;font-size:2.5vmin;" type="submit" name="category" value="<%= parentCategories[i].title %>" >
 								</form>
@@ -144,7 +144,7 @@
 							<% for(var j=0;j< parentCategories[i].subCat.length;j++){ %>
 								<form action="/home/subcategory" method="post">
 									<input type="hidden" name="cat" value="<%= parentCategories[i].title %>">
-									<input style="border:none;font-size:2vmin;width:100%;text-align:left;background:linear-gradient(to bottom,#f2f2f2,#ffffff);width:100%"type="submit" name="subcat" value="<%= parentCategories[i].subCat[j].title %>" >
+									<input style="border:none;font-size:2vmin;width:100%;text-align:left;background:linear-gradient(to bottom,#f2f2f2,#ffffff);width:100%;padding:1%;padding-left:5%;font-family:monospace;"type="submit" name="subcat" value="<%= parentCategories[i].subCat[j].title %>" >
 								</form>
 							<% } %>
 						</div>	
@@ -157,7 +157,7 @@
 					<% for(var i=0;i < parentBrands.length;i++) { %> 
 						<div style="">
 							<div>
-								<div style="position:relative;float:left;width:100%;background-color:white;text-align:center;padding:2%;border:1px solid lightgrey">
+								<div style="position:relative;float:left;width:100%;background-color:white;text-align:center;padding:2%;border-top:1px solid #3CB371;border-bottom:1px solid #3CB371;color:#3CB371;font-weight:bold;">
 									<form action="/home/brand" method="post">
 										<input style="border:none;background-color:white;font-size:2.5vmin;" type="submit" name="brand" value="<%= parentBrands[i].title %>" >
 									</form>
@@ -169,8 +169,8 @@
 							<div class="subbrand">
 								<% for(var j=0;j< parentBrands[i].subBrand.length;j++){ %>
 									<form action="/home/subbrand" method="post">
-										<input type="text" name="brand" value="<%= parentBrands[i].title %>">
-										<input style="border:none;background-color:white;font-size:2vmin;padding:1%;" type="submit" name="subbrand" value="<%= parentBrands[i].subBrand[j].title %>" >
+										<input type="hidden" name="brand" value="<%= parentBrands[i].title %>">
+										<input style="border:none;font-size:2vmin;width:100%;text-align:left;background:linear-gradient(to bottom,#f2f2f2,#ffffff);width:100%;padding:1%;padding-left:5%;font-family:monospace;" type="submit" name="subbrand" value="<%= parentBrands[i].subBrand[j].title %>" >
 									</form>
 								<% } %>
 							</div>

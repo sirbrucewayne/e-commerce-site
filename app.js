@@ -91,6 +91,16 @@ const productSchema=mongoose.Schema({
 });
 var productModelRef=mongoose.model("productModel",productSchema);
 
+
+/*order schema*/
+const orderSchema=mongoose.Schema({
+	email:String,
+	products:[{pid:String,price:String,qty:String,size:String}],
+	payStatus:String,
+	timestamp:String
+});
+var orderModelRef=mongoose.model("orderModel",orderSchema);
+
 /*--------------------------------------------------------------------------------------------------------------------------*/
 
 app.use(express.static(require('path').join(__dirname + '/Public')));
@@ -111,8 +121,20 @@ app.use(session({
   activeDuration: 10 * 1000
 }));
 
-app.get('/',function(req,res){
-	res.render('start');
+app.get('/',async function(req,res){
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		let productJson=await productModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		product=JSON.parse(JSON.stringify( productJson));
+
+		res.render('start',{
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+			product:product
+		});
+
 });
 
 app.get('/home',async function(req,res){
@@ -124,16 +146,17 @@ app.get('/home',async function(req,res){
 		result. Basically, it serializes the execution till the required result is obtained.*/
 		let parentCategoriesJson=await catModelRef.find({});
 		let parentBrandsJson=await brandModelRef.find({});
+		let productJson=await productModelRef.find({});
 		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
-		/*console.log("parr",parentCategoriesJson);
-		console.log("par",parentCategories[0].title);*/
 		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		product=JSON.parse(JSON.stringify( productJson));
+
 		res.render('home',{
 			userInfo:userInfo,
 			userName:req.session.user.name,
 			parentCategories:parentCategories,
 			parentBrands:parentBrands,
-			product:null
+			product:product
 		});
 		
 	}
@@ -158,17 +181,39 @@ app.get('/adminDashboard',async function(req,res){
 		res.redirect('/login');
 	}
 });
-app.get('/register',function(req,res){
-	res.render('register',{
-		emailTaken:''
-	});
+app.get('/register',async function(req,res){
+	let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		let productJson=await productModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		product=JSON.parse(JSON.stringify( productJson));
+
+		
+		res.render('register',{
+			emailTaken:'',
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+			product:product
+		});
 });
 
-app.get('/login',function(req,res){
-	res.render('login',{
-		userEmailTaken:'',
-        userCredentials:''
-	});
+app.get('/login',async function(req,res){
+	let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		let productJson=await productModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		product=JSON.parse(JSON.stringify( productJson));
+
+		
+		res.render('login',{
+			userEmailTaken:'',
+	        userCredentials:'',
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+			product:product
+		});
 });
 
 var adminPattern=/admin*/
@@ -278,10 +323,7 @@ app.post('/dashboard/subcategory',urlencodedParser,async function(req,res){
 
 	var catTitle=req.body.category;
 	var catId=await catModelRef.findOne({title:catTitle}).select('_id');
-	var subcatObj=new subcatModelRef({
-		title:req.body.subcategory,
-		catid:catId._id
-	});
+	
 	var subcatId=await catModelRef.findOne({title:catTitle}).select('subCat -_id');
 		var len=subcatId.subCat.length;		
 		var newsubcat={subcatid:len,title:req.body.subcategory}
@@ -311,11 +353,8 @@ app.post('/dashboard/subbrand',urlencodedParser,async function(req,res){
 
 	var brandTitle=req.body.brand;
 	var brandId=await brandModelRef.findOne({title:brandTitle}).select('_id');
-	var brandcatObj=new subbrandModelRef({
-		title:req.body.subbrand,
-		brandid:brandId._id
-	});
-	var subbrandId=await brandModelRef.findOne({title:brandTitle}).select('sub -_id');
+	
+	var subbrandId=await brandModelRef.findOne({title:brandTitle}).select('subBrand -_id');
 		var len=subbrandId.subBrand.length;		
 		var newsubbrand={subbrandid:len,title:req.body.subbrand}
 		
@@ -476,14 +515,85 @@ app.get('/home/product',async function(req,res){
 	});
 });
 
+app.get('/home/buyproduct',async function(req,res){
+	let userInfo= await cusModelRef.findOne({email:req.session.user.email});
+	userInfo=JSON.parse(JSON.stringify(userInfo));
+	let product=await productModelRef.find({name:req.query.product});
+	res.render('orderDisplay',{
+		product:product[0],
+		userInfo:userInfo,
+		userName:req.session.user.name
+	});
+});
+
+app.post('/home/buyproduct/order',urlencodedParser,async function(req,res){
+	var timestamp=Date.now(); //returns the timestamp in milliseconds.
+	var pid=await productModelRef.findOne({name:req.body.pname}).select('_id');
+	var orderObj=new orderModelRef({
+		email:req.session.user.email,
+		products:[{pid:pid,price:req.body.total,qty:req.body.qty,size:req.body.size}],
+		payStatus:"completed",
+		timestamp:timestamp
+	});
+	orderObj.save(function(err,orderModel){
+		if(err){
+			throw err;
+		}
+		else{
+			res.redirect('/home/payment');
+		}
+	})
+	
+});
 app.get('/logout', function(req, res) {
   	req.session.destroy(function(err){
   		if(err){
   			console.log(err);
   		}
   		else {
-  			res.redirect('/login');
+  			res.redirect('/');
   		}
   	});
+});
+
+app.get('/home/search',async function(req,res){
+	var para=req.query.searchParam;
+	let searchFromProducts=await productModelRef.find({keywords:{$regex:"^"+para+"*",$options:'i'}});
+	console.log(searchFromProducts);
+	if(req.session&&req.session.user)
+	{
+		let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		//let productJson=await productModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		//product=JSON.parse(JSON.stringify( productJson));
+
+		res.render('home',{
+			userInfo:userInfo,
+			userName:req.session.user.name,
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+			product:searchFromProducts
+		});
+	}
+	else{
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		//let productJson=await productModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		//product=JSON.parse(JSON.stringify( productJson));
+
+		res.render('start',{
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+			product:searchFromProducts
+		});
+
+	}
+	
+		
 });
 app.listen(3000);
