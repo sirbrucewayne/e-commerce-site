@@ -12,6 +12,8 @@ var dialog=require('dialog');
 var underscore=require('underscore');
 var fs = require('fs');
 
+const querystring = require('querystring'); 
+
 var app=express();
 
 const mongoose=require('mongoose');
@@ -80,7 +82,7 @@ var brandModelRef=mongoose.model("brandModel",brandSchema);
 /*Cart schema*/
 const cartSchema=mongoose.Schema({
 	email:String,
-	products:[{pname:String,price:String,quantity:Number}]
+	products:[{pname:String,price:String,quantity:Number,description:String,size:String}]
 });
 var cartModelRef=mongoose.model("cartModel",cartSchema);
 
@@ -145,11 +147,32 @@ app.get('/',async function(req,res){
 });
 
 app.get('/home/cart',async function(req,res){
-	let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
-	console.log(cartInfo);
-	res.render('cart',{
-	cartInfo:cartInfo
-	});
+	if(req.session&&req.session.user){
+		let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
+		let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+		let productJson=await productModelRef.find({});
+		product=JSON.parse(JSON.stringify( productJson));
+		var q=0,price=0;
+		if(cartInfo!=null){
+			for(var i=0;i<cartInfo.products.length;i++){
+				q+=parseInt(cartInfo.products[i].quantity);
+				price+=parseInt(cartInfo.products[i].price);
+			}
+		}
+		
+		//console.log(cartInfo);
+		res.render('cart',{
+		cartInfo:cartInfo,
+		userInfo:userInfo,
+		product:product,
+		q:q,
+		price:price
+		});
+	}
+	else{
+		res.redirect('/login');
+	}
+	
 });
 
 
@@ -322,6 +345,7 @@ app.post('/register',urlencodedParser,function(req,res){
 });
 
 app.post('/dashboard/category',urlencodedParser,function(req,res){
+	if(req.session&&req.session.user){
 	var catObj=new catModelRef({
 		title:req.body.category,
 	});
@@ -333,10 +357,16 @@ app.post('/dashboard/category',urlencodedParser,function(req,res){
 			res.redirect('/adminDashboard');
 		}
 	})
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.post('/dashboard/subcategory',urlencodedParser,async function(req,res){
 
+	if(req.session&&req.session.user){
 	var catTitle=req.body.category;
 	var catId=await catModelRef.findOne({title:catTitle}).select('_id');
 	
@@ -350,9 +380,16 @@ app.post('/dashboard/subcategory',urlencodedParser,async function(req,res){
 				res.redirect('/adminDashboard');	
 			}
 		});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 	
 })
 app.post('/dashboard/brand',urlencodedParser,function(req,res){
+
+	if(req.session&&req.session.user){
 	var brandObj=new brandModelRef({
 		title:req.body.brand,
 	});
@@ -364,9 +401,15 @@ app.post('/dashboard/brand',urlencodedParser,function(req,res){
 			res.redirect('/adminDashboard');
 		}
 	})
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 app.post('/dashboard/subbrand',urlencodedParser,async function(req,res){
 
+	if(req.session&&req.session.user){
 	var brandTitle=req.body.brand;
 	var brandId=await brandModelRef.findOne({title:brandTitle}).select('_id');
 	
@@ -380,19 +423,24 @@ app.post('/dashboard/subbrand',urlencodedParser,async function(req,res){
 				res.redirect('/adminDashboard');	
 			}
 		});
+		}
+	else
+	{
+		res.redirect('/login');
+	}
 	
 });
 
 app.get('/home/cartadd',async function(req,res){
+	if(req.session&&req.session.user){
 	let product=await productModelRef.find({name:req.query.product});
 	var uid=req.session.user.email;
-console.log(product.price);
-console.log(product);
+	var size=req.query.size;
 	cartModelRef.findOne({email:uid},function(err,result){
 		if(!result){
 			var cartObj=new cartModelRef({
 			email:uid,
-			products:[{pname:req.query.product,price:product[0].price,quantity:1}]
+			products:[{pname:req.query.product,price:product[0].price,quantity:1,description:product[0].description,size:size}]
 			});
 			cartObj.save(function(err,cartModel){
 				if(err){
@@ -402,7 +450,7 @@ console.log(product);
 				}
 			});	
 		}else{
-		    var newcart={pname:req.query.product,price:product[0].price,quantity:1}			
+		    var newcart={pname:req.query.product,price:product[0].price,quantity:1,description:product[0].description,size:size}			
 		    cartModelRef.findOneAndUpdate({email:uid},{$push:{products:newcart}},function(err,cartModel){
 			if(err) throw err;
 			else{
@@ -411,33 +459,54 @@ console.log(product);
 		    });
 		}	
         });
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.get('/home/updateqty',async function(req,res){
+	if(req.session&&req.session.user){
 	var uid=req.session.user.email;
-	console.log(req.query.qty);
-	console.log(req.query.pid);
 	let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
 	console.log(cartInfo);
+	var q=0,price=0;
 	for(var i=0;i<cartInfo.products.length;i++){
 		if(cartInfo.products[i]._id==req.query.pid){
 			cartInfo.products[i].quantity=req.query.qty;
+			
 		}
+		q+=parseInt(cartInfo.products[i].quantity);
+		price+=parseInt(cartInfo.products[i].price);
 	}
-	console.log(cartInfo);
+	//console.log(cartInfo);
+	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+
 	cartModelRef.findOne({email:uid},function(err,result){			
 		cartModelRef.updateOne({email:uid},{$set:{products:cartInfo.products}},{new: true},function(err,cartModel){
 			if(err) throw err;
 			else{
-				res.redirect('/home');	
+				res.render('cart',{
+					userInfo:userInfo,
+					cartInfo:cartInfo,
+					q:q,
+					price:price
+				});	
 			}
 		});
         });
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 
 var Imagename="default";
 app.post('/dashboard/product',urlencodedParser,function(req,res){
+	if(req.session&&req.session.user){
 	var name=req.body.name;
 	Imagename=name;
 	console.log(Imagename);
@@ -471,9 +540,16 @@ app.post('/dashboard/product',urlencodedParser,function(req,res){
     		res.redirect('/adminDashboard');
     	}
     })
+    }
+	else
+	{
+		res.redirect('/login');
+	}
 });
 app.post('/dashboard/proimage',urlencodedParser,async function(req,res){
-	
+
+
+	if(req.session&&req.session.user){
 	console.log(Imagename);
 	var storage = multer.diskStorage({destination: function (req, file, cb) { cb(null, './Public/productImages')},
 							  		   filename: function (req, file, cb) {cb(null, Imagename + '.jpeg')}});
@@ -488,11 +564,17 @@ app.post('/dashboard/proimage',urlencodedParser,async function(req,res){
     		console.log("image upload success!");
     		res.redirect('/adminDashboard');
     	}
-    })
+    });
+    }
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.post('/home/category',urlencodedParser,async function(req,res){
 	
+	if(req.session&&req.session.user){
 	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
 	let parentCategoriesJson=await catModelRef.find({});
 	let parentBrandsJson=await brandModelRef.find({});
@@ -508,11 +590,17 @@ app.post('/home/category',urlencodedParser,async function(req,res){
 		userName:req.session.user.name,
 		parentCategories:parentCategories,
 		parentBrands:parentBrands,
-	})
+	});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.post('/home/subcategory',urlencodedParser,async function(req,res){
-	
+
+	if(req.session&&req.session.user){
 	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
 	let parentCategoriesJson=await catModelRef.find({});
 	let parentBrandsJson=await brandModelRef.find({});
@@ -528,11 +616,17 @@ app.post('/home/subcategory',urlencodedParser,async function(req,res){
 		userName:req.session.user.name,
 		parentCategories:parentCategories,
 		parentBrands:parentBrands,
-	})
+	});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.post('/home/brand',urlencodedParser,async function(req,res){
 	
+	if(req.session&&req.session.user){
 	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
 	let parentCategoriesJson=await catModelRef.find({});
 	let parentBrandsJson=await brandModelRef.find({});
@@ -548,11 +642,17 @@ app.post('/home/brand',urlencodedParser,async function(req,res){
 		userName:req.session.user.name,
 		parentCategories:parentCategories,
 		parentBrands:parentBrands,
-	})
+	});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.post('/home/subcategory',urlencodedParser,async function(req,res){
 	
+	if(req.session&&req.session.user){
 	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
 	let parentCategoriesJson=await catModelRef.find({});
 	let parentBrandsJson=await brandModelRef.find({});
@@ -568,10 +668,16 @@ app.post('/home/subcategory',urlencodedParser,async function(req,res){
 		userName:req.session.user.name,
 		parentCategories:parentCategories,
 		parentBrands:parentBrands,
-	})
+	});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.get('/home/product',async function(req,res){
+	if(req.session&&req.session.user){
 	//console.log(req.query);
 	let userInfo= await cusModelRef.findOne({email:req.session.user.email});
 	userInfo=JSON.parse(JSON.stringify(userInfo));
@@ -582,20 +688,33 @@ app.get('/home/product',async function(req,res){
 		userInfo:userInfo,
 		userName:req.session.user.name
 	});
+	}
+	else
+	{
+		res.redirect('/login');
+	}
 });
 
 app.get('/home/buyproduct',async function(req,res){
-	let userInfo= await cusModelRef.findOne({email:req.session.user.email});
-	userInfo=JSON.parse(JSON.stringify(userInfo));
-	let product=await productModelRef.find({name:req.query.product});
-	res.render('orderDisplay',{
-		product:product[0],
-		userInfo:userInfo,
-		userName:req.session.user.name
-	});
+	if(req.session&&req.session.user){
+		let userInfo= await cusModelRef.findOne({email:req.session.user.email});
+		userInfo=JSON.parse(JSON.stringify(userInfo));
+		let product=await productModelRef.find({name:req.query.product});
+		res.render('orderDisplay',{
+			product:product[0],
+			userInfo:userInfo,
+			userName:req.session.user.name,
+			size:req.query.size
+		});
+	}
+	else{
+		res.redirect('/login');
+	}
+	
 });
 
 app.post('/home/buyproduct/order',urlencodedParser,async function(req,res){
+	if(req.session&&req.session.user){
 	var timestamp=Date.now(); //returns the timestamp in milliseconds.
 	var pid=await productModelRef.findOne({name:req.body.pname}).select('_id');
 	var orderObj=new orderModelRef({
@@ -611,8 +730,68 @@ app.post('/home/buyproduct/order',urlencodedParser,async function(req,res){
 		else{
 			res.redirect('/home/payment');
 		}
-	})
+	});
+	}
+	else{
+		res.redirect('/login');
+	}
 	
+});
+app.post('/home/buyproduct/orders',urlencodedParser,async function(req,res){
+	
+	if(req.session&&req.session.user){
+	var timestamp=Date.now(); //returns the timestamp in milliseconds.
+	var products=await cartModelRef.findOne({email:req.session.user.email});
+	var orderObj=new orderModelRef({
+		email:req.session.user.email,
+		products:products.products,
+		payStatus:"completed",
+		timestamp:timestamp
+	});
+	
+	orderObj.save(function(err,orderModel){
+		if(err){
+			throw err;
+		}
+		else{
+			var x=orderModel._id;
+			console.log(x);
+			var transid=querystring.stringify({"tid": 'x'}); 
+			res.redirect('/home/payment/transid?'+transid);
+		}
+	});
+	}
+	else{
+		res.redirect('/login');
+	}
+});
+app.get('/home/payment/transid',async function(req,res){
+	console.log(req.query.tid);
+	await cartModelRef.findOneAndDelete({email:req.session.user.email});
+	res.render('payment');
+});
+app.get('/home/productDel',async function(req,res){
+	console.log(req.query.product);
+	await cartModelRef.update({ email: req.session.user.email },{"$pull": { "products": {"pname":req.query.product }}});
+	
+	let cartInfo = await cartModelRef.findOne({email:req.session.user.email});
+	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+	let productJson=await productModelRef.find({});
+	product=JSON.parse(JSON.stringify( productJson));
+	var q=0,price=0;
+	for(var i=0;i<cartInfo.products.length;i++){
+		q+=parseInt(cartInfo.products[i].quantity);
+		price+=parseInt(cartInfo.products[i].price);
+	}
+	//console.log(cartInfo);
+	res.render('cart',{
+		cartInfo:cartInfo,
+		userInfo:userInfo,
+		product:product,
+		q:q,
+		price:price
+	});
+
 });
 app.get('/logout', function(req, res) {
   	req.session.destroy(function(err){
@@ -624,9 +803,7 @@ app.get('/logout', function(req, res) {
   		}
   	});
 });
-<<<<<<< HEAD
-app.listen(3000);
-=======
+
 
 app.get('/home/search',async function(req,res){
 	var para=req.query.searchParam;
@@ -669,4 +846,3 @@ app.get('/home/search',async function(req,res){
 		
 });
 app.listen(3000);
->>>>>>> e6e7f02712279ab7e25fbc7fcc103a8260314534

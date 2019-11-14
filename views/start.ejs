@@ -18,7 +18,7 @@
     	}
     	#searchbox{
     		position: relative;
-    		left:20%;
+    		left:25%;
     		top:20%;
     		width:40%;
     		height:60%;
@@ -103,7 +103,34 @@
     	.category{
     		position: relative;
     	}
-    	
+    	.slideShow{
+       	   position:relative;
+           width:98%;
+           height:50vh;
+           margin-top:1%;
+           margin-left:1%;
+           background-color:red;
+       }
+        .controls{
+       	  position:absolute;
+       	  top:45%;
+       	  left:0%;
+       	  background-color:white;
+       	  color:#3CB371;
+       }
+       #rightCtrl{
+           left:98%;
+       }
+       #rightCtrl:hover{
+        cursor: pointer;
+       }
+       .slides >img{
+           position: absolute;
+           width:100%;
+           height:100%;
+           max-height:100%;
+
+       }
     	*:focus{
         outline:none;
        }
@@ -178,25 +205,67 @@
 				</div>
 		</div>
 		<div id="mainnav">
-			<% if(product) { %>
+			<div class="slideShow">
+		   	   <div class="slides">
+		   	   	 <img style="opacity:1" src="/slides/img5.jpg">
+		   	   </div>
+		   	   <div class="slides">
+		   	   	 <img  style="opacity:1" src="/slides/img6.jpg">
+		   	   </div>
+		   	   <div class="slides">
+		   	   	 <img  style="opacity:1" src="/slides/img3.jpg">
+		   	   </div>
+		   	   <div class="slides">
+		   	   	 <img  style="opacity:1" src="/slides/img4.jpg">
+		   	   </div>
+		   	   <a class="controls" onclick="nextSlide(+1)"><h2>&#10094;</h2></a>
+		       <a class="controls" id="rightCtrl" onclick="nextSlide(-1)"><h2>&#10095;</h2></a>
+		   </div>
+			<% if(product.length) { %>
 			    <% for(var i=0;i< product.length;i++) { %>
 			    	<div class="productBox">
 				    	<img src="/productImages/<%= product[i].image %>" style="width:250px;height:250px">
 				    	<form action="/home/product" method="get" target="_blank">
-				    		<button type="submit" name="product" value="<%= product[i].name %>"><%= product[i].name %></button>
+				    		<button style="font-size:120%;border:none;background-color:white;color:#3CB371;" type="submit" name="product" value="<%= product[i].name %>"><%= product[i].name %></button>
 				    	</form>
+				    	<p style="font-size:80%;padding:1%;">Tags: <%= product[i].keywords %></p>
 				    </div>
 			    <% } %>
-			<% } %>
+			<% } else { %>
+          <p style="margin:10%;font-size:150%;">Sorry, No Products available for your search :(</p>
+        <% } %>
 		</div>
 	</div>
 	
 	
 </body>
 <script type="text/javascript">
-	$(document).ready(function(){
-		
-	})
-
+	var slideIndex=1;
+	  var factor=1;
+	  switchSlides(slideIndex);
+            
+            setInterval(function addSlide()
+            {
+            	slideIndex+=factor;
+            	//console.log(slideIndex);
+            	switchSlides(slideIndex);
+            	 
+            },5000);
+            function switchSlides(n)
+            {
+               var slides=document.getElementsByClassName("slides");
+               if(n>slides.length)
+               	  slideIndex=1;
+               	if(n<1)
+               		slideIndex=slides.length;
+               	for(var i=0;i<slides.length;i++)
+               		slides[i].style.display="none";
+               	slides[slideIndex-1].style.display="block";
+            }
+            function nextSlide(x)
+            {
+            	slideIndex+=x;
+            	switchSlides(slideIndex);
+            }
 </script>
 </html>

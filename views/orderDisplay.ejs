@@ -16,7 +16,7 @@
             height:8vh;
             background-color:#3CB371;
         }
-        #logout,#usericon,#cart{
+        #logout,#usericon,#cart,#home{
             position: absolute;
             margin-left: 85vw;
             margin-top:2vh;
@@ -26,6 +26,9 @@
             background-color: #3CB371;
             color: white;
             font-weight: bold;
+        }
+        #home{
+            margin-left: 80vw;
         }
         #cart{
             margin-left: 80vw;
@@ -73,31 +76,25 @@
             padding:3%;
             border-bottom:2px solid lightgrey;
         }
+
+        #orderSum{
+            position: relative;
+            width:100%;
+            height:10%;
+            padding:3%;
+            border-bottom:2px dotted lightgrey;
+        }
          #orderCheck{
             position: relative;
             width:100%;
-            height:35%;
+            height:30%;
             padding:3%;
-            border-bottom:2px solid lightgrey;
-        }
-        #sizeCheck{
-            position: relative;
-            width:100%;
-            height:8%;
-            padding:2%;
-            border-bottom:2px solid lightgrey;
-        }
-        #qtyCheck{
-            position: relative;
-            width:100%;
-            height:9%;
-            padding:2%;
             border-bottom:2px solid lightgrey;
         }
         #payCheck{
             position: relative;
             width:100%;
-            height:8%;
+            height:10%;
             padding:2%;
             border-bottom:2px solid lightgrey;
         }
@@ -110,6 +107,7 @@
             width:45%;
             left:25%;
             margin:2%;
+            margin-top:5%;
             padding:1%;
             background-color: #3CB371;
             color:white;
@@ -156,7 +154,7 @@
 <body>
     <div id="header">
         
-        <!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
+      <button  id="home" onclick="location.href='/home'">Home</button>
         <button id="logout" onclick="location.href='/logout'">Logout</button>
     </div>
     <div id="main">
@@ -171,29 +169,20 @@
                     <span style="font-size:90%;font-family:monospace;color:black;color:#3CB371;font-weight:bold;"><%= userInfo.address %>   </span>
                 </p>
             </div>
-            <div id="orderCheck">
+            <div id="orderSum">
                 <p style="font-size:120%;color:darkgrey;"><b>ORDER SUMMARY</b></p>
+            </div>
+            <div id="orderCheck">
                 <div style="display:flex">
                     <img src="/productImages/<%= product.image %>" style="width:100px;height:100px;">
                     <div style="font-size:90%;font-family:monospace;color:black;margin-left:10%;color:#3CB371;font-weight:bold;">
                         <p ><%= product.name %></p>
-                        <p>Rs. <%= product.price %></p>
+                        <p>Size:<%= size %>, Rs.<%= product.price %></p>
                         <p><%= product.description %></p>
+                        <p style="font-size:100%;color:#3CB371;"><b>QUANTITY :</b>
+                        <input style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;" id="selQty" type="number" name="qty" min="1" max="100" value="1" onchange="payCal()">
                     </div>
                 </div>
-            </div>
-            <div id="sizeCheck">
-                <p style="font-size:120%;color:darkgrey;"><b>SIZE :</b>
-                <span><select id="selSize" style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;">
-                    <% for(var i=0;i< product.size.length;i++) { %>
-                        <option><%= product.size[i] %></option>
-                    <% } %>
-                </select></span>
-                </p>
-            </div>
-            <div id="qtyCheck">
-                 <p style="font-size:120%;color:darkgrey;"><b>QUANTITY :</b>
-                <input style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;" id="selQty" type="number" name="qty" min="1" max="100" value="1" onchange="payCal()">
             </div>
             <div id="payCheck">
                 <p style="font-size:120%;color:darkgrey;"><b>PAYMENT OPTIONS :</b>
@@ -208,7 +197,11 @@
                     <input id="fsize" type="hidden" name="size" value="">
                     <input id="ftot" type="hidden" name="total" value="">
                 </form>
-                <button id="placeOrder" >PLACE ORDER</button>
+                <div>
+                <form id="order" action="/home/buyproduct/orders" method="post">
+                    <button id="placeOrder" >PLACE ORDER</button>
+                </form>
+            </div>
             </div>
             <!--  -->
             
@@ -224,8 +217,7 @@
 </body>
 <script type="text/javascript">
     function payCal(){
-        var s=document.getElementById("selSize");
-        s=s.options[s.selectedIndex].value;
+        
         var q=document.getElementById("selQty").value;
         var payMode=document.getElementById("payMode");
         payMode=payMode.options[payMode.selectedIndex].value;

@@ -18,7 +18,7 @@
     	}
     	#searchbox{
     		position: relative;
-    		left:20%;
+    		left:25%;
     		top:20%;
     		width:40%;
     		height:60%;
@@ -121,7 +121,9 @@
             font-size:140%;
             height:;
         }
-        
+        #selSize{
+
+        }
     	*:focus{
         outline:none;
        }
@@ -133,7 +135,7 @@
 </head>
 <body>
 	<div id="header">
-		<form id="searchbox" action="/dashboard/idontknow" method="GET">
+		<form id="searchbox" action="/home/search" method="GET">
 	 		<input id="searchInput" type="text" name="searchParam" placeholder="Search for products, brands and more ">
 	 	</form>
 	 	<!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
@@ -145,26 +147,22 @@
 	<div id="main">
 		<div id="sidenav">
 			<img src="/productImages/<%= product.image %>" style="width:35vw;height:60vh;">
-<<<<<<< HEAD
-            <<div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
-<form action="/home/cartadd" method="get" >
-                <input type="submit" class="selIcon" name="product" value="<%= product.name %>" style="">ADD TO CART</button>
-</form>
-                <button class="selIcon" style="">BUY NOW</button>
-
-=======
             <div style="margin-top:2%;display: flex;flex-wrap: wrap;width:100%;">
-                <button class="selIcon" style="">ADD TO CART</button>
-                <form action="/home/buyproduct" method="get" >
-                    <input type="hidden" name="product" value="<%= product.name %>">
-                    <button class="selIcon" type="submit">BUY NOW</button>
-                </form>
->>>>>>> e6e7f02712279ab7e25fbc7fcc103a8260314534
+                    <form id="form1" style="background-color:white;width:50%;" action="/home/cartadd" method="get" >
+                        <input type="hidden" name="product" value="<%= product.name %>" >
+                        <input type="hidden" id="atcSize" name="size" value="">
+                        <button class="selIcon" id="atcBtn" style="width:90%;" type="submit">ADD TO CART</button>
+                    </form>
+                    <form id="form2" style="background-color:white;width:50%;" action="/home/buyproduct" method="get" >
+                        <input type="hidden" name="product" value="<%= product.name %>">
+                        <input type="hidden" id="bySize" name="size" value="">
+                        <button class="selIcon" id="bnBtn" style="width:95%;" type="submit">BUY NOW</button>
+                   </form>
             </div>
             
 		</div>
 		<div id="mainnav">
-			2<p ><%= product.name %></p>
+			<p ><%= product.name %></p>
             <p>Rs. <%= product.price %></p>
             <p><%= product.description %></p>
             <p><b>Available Offers:</b> <br>
@@ -176,9 +174,11 @@
                 
             </p>
             <p><b>Size :</b>
-                <% for(var i=0;i< product.size.length;i++) { %>
-                    <span><%= product.size[i] %></span>
-                <% } %>
+                <span><select id="selSize" style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;width:10%;">
+                    <% for(var i=0;i< product.size.length;i++) { %>
+                        <option><%= product.size[i] %></option>
+                    <% } %>
+                </select></span>
             </p>
             <p><b>Tags :</b>
                 <% for(var i=0;i< product.keywords.length;i++) { %>
@@ -191,7 +191,21 @@
 </body>
 <script type="text/javascript">
 	$(document).ready(function(){
-		
+         var s=$("#selSize").val();
+        $("#selSize").change(function(){
+             s=$("#selSize").val();
+        });
+       
+		$("#bnBtn").click(function(){
+            
+            $("#bySize").val(s);
+            $("#form2").submit();
+        });
+        $("#atcBtn").click(function(){
+            
+            $("#atcSize").val(s);
+            $("#form1").submit();
+        })
 	})
 
 </script>

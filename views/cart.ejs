@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Online Shopping</title>
+	<title>cart</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -13,75 +13,244 @@ $("body").delegate(".qty","change",function(){
 		var price = $("#price-"+pid).val();
 		var total = qty * price;
 		$("#amt-"+pid).val(total);
-		$("#"+pid).submit();
+        $("#"+pid).submit();
 	})
   })
 </script>
+<style type="text/css">
+	#header{
+            position: fixed;
+            width: 100vw;
+            height:8vh;
+            background-color:#3CB371;
+        }
+        #logout,#usericon,#cart,#home{
+            position: absolute;
+            margin-left: 85vw;
+            margin-top:2vh;
+            color:black;
+            font-size:2.2vmin;
+            border: none;
+            background-color: #3CB371;
+            color: white;
+            font-weight: bold;
+        }
+        #home{
+            margin-left: 80vw;
+        }
+        #cart{
+            margin-left: 80vw;
+        }
+        #usericon{
+            margin-left: 70vw;
+        }
+        #main{
+            position: absolute;
+            top:9vh;
+            width:100vw;
+            background-color:#f2f2f2;
+            display:flex;
+            flex-wrap:wrap;
+        }
+        #sidenav{
+            position: relative;
+            float: left;
+            margin-top:0.5%;
+            left:10%;
+            width:48vw;
+            background-color:white;
+        }
+        #mainnav{
+            position: relative;
+            margin-top:0.5%;
+            margin-bottom:0.5%;
+            left:11%;
+            width:30vw;
+            background-color:white;
+        }
+        #loginCheck{
+            position: relative;
+            width:100%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+        #addressCheck{
+            position: relative;
+            width:100%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+        #orderSum{
+            position: relative;
+            width:100%;
+            padding:3%;
+            border-bottom:2px dotted lightgrey;
+        }
+         #orderCheck{
+            position: relative;
+            width:100%;
+            padding:3%;
+            border-bottom:2px solid lightgrey;
+        }
+        #qtyCheck{
+            position: relative;
+            width:100%;
+            height:9%;
+            padding:2%;
+            border-bottom:2px solid lightgrey;
+        }
+        #payCheck{
+            position: relative;
+            width:100%;
+            padding:2%;
+            border-bottom:2px solid lightgrey;
+        }
+        #placeOrder{
+            position: relative;
+            border:none;
+            font-weight: bold;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size:130%;
+            width:45%;
+            left:25%;
+            margin:2%;
+            margin-top:5%;
+            padding:1%;
+            background-color: #3CB371;
+            color:white;
+            border-bottom:0.1px solid lightgrey;
+        }
+        #mainnav > p{
+            position: relative;
+            width:100%;
+            /*height:6%;*/
+            padding:3%;
+        }
+        #mainnav > p:nth-child(1){
+            color:darkgrey;
+            font-size:140%;
+            font-weight:bold;
+            border-bottom:1px solid lightgrey;
+        }
+        #mainnav > p:nth-child(2){
+            color:black;
+            padding:3%;
+            font-size:120%;
+        }
+        #mainnav > p:nth-child(3){
+            color:black;
+            padding:3%;
+            font-size:120%;
+            border-bottom:1px dotted lightgrey;
+        }
+        #mainnav > p:nth-child(4){
+            color:black;
+            padding:3%;
+            font-size:120%;
+            border-bottom:1px solid lightgrey;
+        }
+</style>
 </head>
 <body>
-	<div class="navbar navbar-default navbar-fixed-top" id="topnav">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a href="index.php" class="navbar-brand">Online Shopping</a>
-			</div>
-
-
-
-		</div>
-	</div>
-	<p><br><br></p>
-	<p><br><br></p>
-
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
-			<div class="row">
-				<div class="col-md-12" id="cart_msg"></div>
-			</div>
-				<div class="panel panel-primary text-center">
-					<div class="panel-heading">Cart Checkout</div>
-					<div class="panel-body"></div>
-					<div class="row">
-						<div class="col-md-2"><b>Action</b></div>
-						<div class="col-md-2"><b>Product Name</b></div>
-						<div class="col-md-2"><b>Product Price</b></div>
-						<div class="col-md-2"><b>Quantity</b></div>
-						<div class="col-md-2"><b>Price in $</b></div>
-					</div>
-					<br><br>
-					<div id='cartdetail'>
-					</div>
-					<div class="panel-footer">
-
-					</div>
-				</div>
-				<% if(cartInfo != null) { %> 
-				<div class="category">
+	<div id="header">
+        <!-- <label for="searchInput"><p id="searchIcon"><span class="glyphicon glyphicon-search custom-color"></span></p></label> -->
+        <button  id="home" onclick="location.href='/home'">Home</button>
+        <button id="logout" onclick="location.href='/logout'">Logout</button>
+    </div>
+    <div id="main">
+        <div id="sidenav">
+            <div id="loginCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>LOGIN</b><br>
+                    <span style="font-size:90%;font-family:monospace;color:black;color:#3CB371;font-weight:bold;"><%= userInfo.name %>   </span>
+                </p>
+            </div>
+            <div id="addressCheck">
+               <p style="font-size:120%;color:darkgrey;"><b>DELIVERY ADDRESS</b><br>
+                    <span style="font-size:90%;font-family:monospace;color:black;color:#3CB371;font-weight:bold;"><%= userInfo.address %>   </span>
+                </p>
+            </div>
+            <div id="orderSum">
+                <p style="font-size:120%;color:darkgrey;"><b>ORDER SUMMARY</b></p>
+            </div>
+            <% if(cartInfo != null) { %> 
+			<div id="orderCheck">
 				<% for(var i=0;i < cartInfo.products.length;i++) { %> 
-					<div style="">
-						<div>
-							<div><b><%= cartInfo.products[i].pname %></b></div>
-							<div><input class="price" type='text' pid="<%= cartInfo.products[i]._id %>" id="price-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].price %>" disabled></div>
-							<form id="<%= cartInfo.products[i]._id %>" action="/home/updateqty" method="get" >
+					<div style="display:flex">
+						<img src="/productImages/<%= cartInfo.products[i].pname %>.jpeg" style="width:100px;height:100px;padding:1%;border:0.1px solid black;">
+	                    <div style="font-size:90%;font-family:monospace;color:black;margin-left:10%;color:#3CB371;font-weight:bold;">
+	                        <p style="color:black"><%= cartInfo.products[i].pname %>
+	                        </p>
+	                        <p>Size: <%= cartInfo.products[i].size %>, Rs.<%= cartInfo.products[i].price %></p>
+	                        <p><%= cartInfo.products[i].description %></p>
+	                        <div>
+								<input class="price" type='hidden' pid="<%= cartInfo.products[i]._id %>" id="price-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].price %>" disabled>
+								</div id="qtyCheck">
+									<form style="" id="<%= cartInfo.products[i]._id %>" action="/home/updateqty" method="get" >
+										<div>
+											<p style="font-size:100%;color:#3CB371;"><b>QUANTITY :</b>
+											<input style="border:none;background-color:white;padding:1%;font-size:100%;color:#3CB371;font-weight:bold;"  class="qty" type="number" min="1" max="100" pid="<%= cartInfo.products[i]._id %>" id="qty-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].quantity %>" name="qty" >
+										</div>
+										<div>
+											<input class="pid" type='hidden' value="<%= cartInfo.products[i]._id %>" name="pid">
+										</div>
+									</form>
+									</p>
+								<div>
+									<input class="price" type='hidden' pid="<%= cartInfo.products[i]._id %>" id="amt-<%= cartInfo.products[i]._id %>" value="<%= parseInt(cartInfo.products[i].price)*parseInt(cartInfo.products[i].quantity)  %>" disabled>
+								</div>
+								 <span>
+	                        		<form action="/home/productDel" method="get">
+	                        			<input type="hidden" name="product" value="<%= cartInfo.products[i].pname %>">
+	                        			<button type="submit">REMOVE</button>
+	                        		</form>
+	                        	</span>
+		                    </div>
 
-							<div><input class="qty" type='text' pid="<%= cartInfo.products[i]._id %>" id="qty-<%= cartInfo.products[i]._id %>" value="<%= cartInfo.products[i].quantity %>" name="qty" ></div>
-<div><input class="pid" type='text' value="<%= cartInfo.products[i]._id %>" name="pid"></div>
-							</form>
-							<div><input class="price" type='text' pid="<%= cartInfo.products[i]._id %>" id="amt-<%= cartInfo.products[i]._id %>" value="<%= parseInt(cartInfo.products[i].price)*parseInt(cartInfo.products[i].quantity)  %>" disabled></div>
-						</div>	
-					</div>
-					
+	                </div>
+                     <% if (i < cartInfo.products.length-1) { %>
+                        <p style="width:100%;border-bottom:1px dotted black;padding:1%;"></p>
+                     <% } %>
 				<% } %>
+
 				</div>
-				<% } %>
-
-				<button class='btn btn-success btn-lg pull-right' id='checkout_btn' data-toggle="modal" data-target="#myModal">Checkout</button>
-			</div>
-
-			<div class="col-md-2"></div>
-		</div>
-	</div>
+			<% } %>
+            
+            <div id="payCheck">
+                <p style="font-size:120%;color:darkgrey;"><b>PAYMENT OPTIONS :</b>
+                <select id="payMode" style="border:none;background-color:white;padding:1%;font-size:80%;color:#3CB371;font-weight:bold;">
+                    <option>Cash On Delivery</option>
+                </select>
+            </div>
+            <div>
+                <% if (cartInfo != null && cartInfo.products.length) { %>
+                    <form id="order" action="/home/buyproduct/orders" method="post">
+                        <button id="placeOrder" >PLACE ORDER</button>
+                    </form>
+                <% } %>
+            </div>
+            <!--  -->
+            
+        </div>
+        <div id="mainnav">
+            <p >PRICE DETAILS : </p>
+            <p>Price ( <span id="finalQty"><%= q %> </span> item ) <span style="margin-left:45%;" class="finalPrice">Rs.<%= price %></span></p>
+            <p><span>Delivery Charges </span><span style="margin-left:45%;">FREE</span></p>
+            <p><span>Total Payable </span><span style="margin-left:47%"></span><span  class="finalPrice" id="totAmt">Rs.<%= price %></span></p>
+        </div>
+    </div>
 
 </body>
+<script type="text/javascript">
+	function payCal(){
+        
+        var payMode=document.getElementById("payMode");
+        payMode=payMode.options[payMode.selectedIndex].value;
+        //console.log(tot);
+        document.getElementById("finalQty").innerHTML=Q
+        var y=document.getElementsByClassName("finalPrice");
+        y[0].innerHTML="Rs."+price;
+        y[1].innerHTML=+price;
+
+    }
+</script>
 </html>

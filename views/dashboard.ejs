@@ -11,75 +11,146 @@
 
     <style type="text/css">
     	#header{
-    		position: fixed;
-    		width: 100vw;
-    		height:3%;
-    		background:black;
-    	}
+            position: fixed;
+            width: 100vw;
+            height:10%;
+            background: #4CAF50;
+            padding:1.5%;
+        }
+            .form-popup {
+          display: none;
+        }
+        .button {
+          background-color: #4CAF50;
+          border: none;
+          color: white;
+          padding: 15px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          width:15vw;
+          font-size: 16px;
+          margin: 4px 2px;
+          cursor: pointer;
+        }
+        .input{
+            padding: 10px 28px;
+            text-align: center;
+        }
+        .inputtext{
+            padding: 10px 28px;
+            text-align: center;
+        }
+        #box{
+            position:absolute;
+            margin-top:10%;
+            
+        }
     </style>
 </head>
 <body>
 	<div id="header">
 		<p style="color: white">Hello <%= adminName%></p> 
 	</div>	<br>
-	<p>Add Category</p>
-    <div>
-    	<form action="/dashboard/category" method="POST">
-    		<input type="text" name="category" placeholder="category">
-            <button type="submit" name="sbtCat">Add Category</button>
-    	</form>
-   	</div><br>
-   	<!-- <p id="catList" style="color: red">sjakddd<%= parentCategories[0].title %></p><br> -->
-   	 <div>
-    	<form action="/dashboard/subcategory" method="POST">
-    		<input type="text" name="subcategory" placeholder="category">
-    		<input type="text" name="category" placeholder="parent category">
-    		<datalist id="catList"></datalist>
-            <button type="submit" name="sbtCat">Add sub-category</button>
-    	</form>
-   	</div><br>
-   	<p>Add Brands</p>
-    <div>
-    	<form action="/dashboard/brand" method="POST">
-    		<input type="text" name="brand" placeholder="brand">
-            <button type="submit" name="sbtBrand">Add Brand</button>
-    	</form>
-   	</div><br>
-   	 <div>
-    	<form action="/dashboard/subbrand" method="POST">
-    		<input type="text" name="subbrand" placeholder="brand">
-    		<input type="text" name="brand" placeholder="parent brand">
-    		<datalist id="brandList"></datalist>
-            <button type="submit" name="sbtBrand">Add sub-brand</button>
-    	</form>
-   	</div><br>
-    <p>Add Products</p>
-    <div>
-    	<form action="/dashboard/product" method="POST">
-    		<input type="text" name="name" placeholder="name"><br>
-    		<textarea type="text" name="description" placeholder="description"></textarea><br>
-    		<input type="float" name="price" placeholder="price(INR)"><br>
-    		size-s<input type="checkbox" name="size_s" value="S">
-    		size-m<input type="checkbox" name="size_m" value="M">
-    		size-l<input type="checkbox" name="size_l" value="L">
-    		size-xl<input type="checkbox" name="size_xl" value="XL">
-    		size-uk8<input type="checkbox" name="size_eight" value="UK8">
-    		size-uk9<input type="checkbox" name="size_nine" value="UK9">
-    		size-uk10<input type="checkbox" name="size_ten" value="UK10">
-    		size-uk11<input type="checkbox" name="size_eleven" value="UK11"><br>
-    		<input type="text" name="keywords" placeholder="keywords"><br>
-    		<input type="text" name="category" placeholder="Category">
-    		<datalist id="categoryList"></datalist>
-    		<input type="text" name="subcategory" placeholder="Sub-category">
-    		<datalist id="subcatList"></datalist>
-    		<input type="text" name="brand" placeholder="brand">
-    		<datalist id="brandsList"></datalist><br>
-    		<button type="submit" name="sbtPro">Add Product</button>
-    	</form>
-    	<form action="/dashboard/proimage" method="POST" enctype="multipart/form-data">
-    		<input type="file" name="image" onchange="form.submit()"> 
-    	</form>
+	<<div id="box">
+        <button class ="button" onclick ="openCategory()">Add Category</button>
+    <div class ="form-popup" id="Category">
+        <form action="/dashboard/category" method="POST">
+            <input class="input" type="text" name="category" placeholder="category">
+            <button class ="button" type="submit" name="sbtCat" onclick="closeCategory()">Add  Category</button>
+        </form>
+    </div><br>
+    <!-- <p id="catList" style="color: red">sjakddd<%= parentCategories[0].title %></p><br> -->
+     <button class ="button" onclick="openSubCategory()">Add Sub-Category</button>
+     <div class="form-popup" id="SubCategory">
+        <form action="/dashboard/subcategory" method="POST">
+            <input class="input" type="text" name="subcategory" placeholder="category">
+            <input class="input" type="text" name="category" placeholder="parent category">
+            <datalist id="catList"></datalist>
+            <button class ="button" type="submit" name="sbtCat" onclick="closeSubCategory()">Add sub-category</button>
+        </form>
+    </div><br>
+    <button class ="button" onclick="openBrand()">Add-Brand</button>
+    <div class="form-popup" id="Brand">
+        <form action="/dashboard/brand" method="POST">
+            <input class="input" type="text" name="brand" placeholder="brand">
+            <button class ="button" type="submit" name="sbtBrand" onclick = "closeBrand()">Add Brand</button>
+        </form>
+    </div><br>
+    <button class ="button" onclick="openSubBrand()">Add-SubBrand</button>
+     <div class="form-popup" id="SubBrand">
+        <form action="/dashboard/subbrand" method="POST">
+            <input class="input" type="text" name="subbrand" placeholder="brand">
+            <input class="input" type="text" name="brand" placeholder="parent brand">
+            <datalist id="brandList"></datalist>
+            <button class ="button" type="submit" name="sbtBrand" onclick="closeSubBrand()">Add sub-brand</button>
+        </form>
+    </div><br>
+    <button class ="button" onclick="openProduct()">Add-Product</button>
+    <div class ="form-popup" id = "Product">
+        <form action="/dashboard/product" method="POST">
+            <input class="input" type="text" name="name" placeholder="name"><br>
+            <textarea class="inputtext"type="text" name="description" placeholder="description" ></textarea><br>
+            <input class="input" type="float" name="price" placeholder="price(INR)"><br>
+            size-s<input type="checkbox" name="size_s" value="S">
+            size-m<input type="checkbox" name="size_m" value="M">
+            size-l<input type="checkbox" name="size_l" value="L">
+            size-xl<input type="checkbox" name="size_xl" value="XL">
+            size-uk8<input type="checkbox" name="size_eight" value="UK8">
+            size-uk9<input type="checkbox" name="size_nine" value="UK9">
+            size-uk10<input type="checkbox" name="size_ten" value="UK10">
+            size-uk11<input type="checkbox" name="size_eleven" value="UK11"><br>
+            <input class="input" type="text" name="keywords" placeholder="keywords"><br>
+            <input class="input" type="text" name="category" placeholder="Category">
+            <datalist id="categoryList"></datalist>
+            <input class="input" type="text" name="subcategory" placeholder="Sub-category">
+            <datalist id="subcatList"></datalist>
+            <input class="input" type="text" name="brand" placeholder="brand">
+            <datalist id="brandsList"></datalist><br>
+            <button class ="button" type="submit" name="sbtPro">Add Product</button>
+        </form>
+        <form action="/dashboard/proimage" method="POST" enctype="multipart/form-data" onsubmit="closeProduct()">
+            <input type="file" name="image" onchange="form.submit()"> 
+        </form>
     </div>
+    </div>
+    <script type="text/javascript">
+        function openCategory() {
+  document.getElementById("Category").style.display = "block";
+}
+
+function closeCategory() {
+  document.getElementById("Category").style.display = "none";
+}
+function openSubCategory() {
+  document.getElementById("SubCategory").style.display = "block";
+}
+
+function closeSubCategory() {
+  document.getElementById("SubCategory").style.display = "none";
+}
+function openBrand() {
+  document.getElementById("Brand").style.display = "block";
+}
+
+function closeBrand() {
+  document.getElementById("Brand").style.display = "none";
+}
+function openSubBrand() {
+  document.getElementById("SubBrand").style.display = "block";
+}
+
+function closeSubBrand() {
+  document.getElementById("SubBrand").style.display = "none";
+}
+function openProduct() {
+  document.getElementById("Product").style.display = "block";
+}
+
+function closeProduct() {
+  document.getElementById("Product").style.display = "none";
+}
+    </script>
 </body>
 <script type="text/javascript">
 	var  n = "<%= adminName %> ";
