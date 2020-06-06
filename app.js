@@ -16,16 +16,13 @@ const querystring = require('querystring');
 
 var app=express();
 
-const mongoose=require('mongoose');
-mongoose.connect("mongodb://localhost:27017/shoppingdb", { useNewUrlParser: true });
-var db=mongoose.connection;
-db.on('error',console.log.bind(console,"connection error"));
-db.once('open',function(callback){
-	console.log("connection established");
-});
+const database = require('./dbConnection.js');
 
-//schemas
+
+// -------------------  schemas ----------------------------------
+var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
+
 /*Admin Schema*/
 const AdminSchema=mongoose.Schema({
 	name:String,
@@ -46,7 +43,7 @@ admin1.save(function(err,admin){
 		console.log("Admin record added")
 	}
 });
- if u want, add more admin records through "db.collectionName.insert({key:value})" manually
+ if u want to add more admin records, do through "db.collectionName.insert({key:value})" manually
 */
 
 
@@ -550,21 +547,21 @@ app.post('/dashboard/proimage',urlencodedParser,async function(req,res){
 
 
 	if(req.session&&req.session.user){
-	console.log(Imagename);
-	var storage = multer.diskStorage({destination: function (req, file, cb) { cb(null, './Public/productImages')},
-							  		   filename: function (req, file, cb) {cb(null, Imagename + '.jpeg')}});
+		console.log(Imagename);
+		var storage = multer.diskStorage({destination: function (req, file, cb) { cb(null, './Public/productImages')},
+								  		   filename: function (req, file, cb) {cb(null, Imagename + '.jpeg')}});
 
-    var upload = multer({ storage: storage }).single('image'); //single --> here indicates that we are uploading a single image
-    upload(req,res,function(err){
-    	if(err){
-    		throw err;
-    	}
-    	else
-    	{
-    		console.log("image upload success!");
-    		res.redirect('/adminDashboard');
-    	}
-    });
+	    var upload = multer({ storage: storage }).single('image'); //single --> here indicates that we are uploading a single image
+	    upload(req,res,function(err){
+	    	if(err){
+	    		throw err;
+	    	}
+	    	else
+	    	{
+	    		console.log("image upload success!");
+	    		res.redirect('/adminDashboard');
+	    	}
+	    });
     }
 	else
 	{
@@ -575,22 +572,22 @@ app.post('/dashboard/proimage',urlencodedParser,async function(req,res){
 app.post('/home/category',urlencodedParser,async function(req,res){
 	
 	if(req.session&&req.session.user){
-	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
-	let parentCategoriesJson=await catModelRef.find({});
-	let parentBrandsJson=await brandModelRef.find({});
-	parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
-	parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
 
-	var product=await productModelRef.find({category:req.body.category});
-	product=JSON.parse(JSON.stringify(product));
-	//console.log(product);
-	res.render('home',{
-		product:product,
-		userInfo:userInfo,
-		userName:req.session.user.name,
-		parentCategories:parentCategories,
-		parentBrands:parentBrands,
-	});
+		var product=await productModelRef.find({category:req.body.category});
+		product=JSON.parse(JSON.stringify(product));
+		//console.log(product);
+		res.render('home',{
+			product:product,
+			userInfo:userInfo,
+			userName:req.session.user.name,
+			parentCategories:parentCategories,
+			parentBrands:parentBrands,
+		});
 	}
 	else
 	{
@@ -601,22 +598,22 @@ app.post('/home/category',urlencodedParser,async function(req,res){
 app.post('/home/subcategory',urlencodedParser,async function(req,res){
 
 	if(req.session&&req.session.user){
-	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
-	let parentCategoriesJson=await catModelRef.find({});
-	let parentBrandsJson=await brandModelRef.find({});
-	parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
-	parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
 
-	var product=await productModelRef.find({subcategory:req.body.subcat,category:req.body.cat});
-	product=JSON.parse(JSON.stringify(product));
-	//console.log(product);
-	res.render('home',{
-		product:product,
-		userInfo:userInfo,
-		userName:req.session.user.name,
-		parentCategories:parentCategories,
-		parentBrands:parentBrands,
-	});
+		var product=await productModelRef.find({subcategory:req.body.subcat,category:req.body.cat});
+		product=JSON.parse(JSON.stringify(product));
+		//console.log(product);
+		res.render('home',{
+			product:product,
+			userInfo:userInfo,
+			userName:req.session.user.name,
+			parentCategories:parentCategories,
+			parentBrands:parentBrands
+		});
 	}
 	else
 	{
@@ -641,7 +638,7 @@ app.post('/home/brand',urlencodedParser,async function(req,res){
 		userInfo:userInfo,
 		userName:req.session.user.name,
 		parentCategories:parentCategories,
-		parentBrands:parentBrands,
+		parentBrands:parentBrands
 	});
 	}
 	else
@@ -653,22 +650,22 @@ app.post('/home/brand',urlencodedParser,async function(req,res){
 app.post('/home/subcategory',urlencodedParser,async function(req,res){
 	
 	if(req.session&&req.session.user){
-	let userInfo = await cusModelRef.findOne({email:req.session.user.email});
-	let parentCategoriesJson=await catModelRef.find({});
-	let parentBrandsJson=await brandModelRef.find({});
-	parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
-	parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
+		let userInfo = await cusModelRef.findOne({email:req.session.user.email});
+		let parentCategoriesJson=await catModelRef.find({});
+		let parentBrandsJson=await brandModelRef.find({});
+		parentCategories=JSON.parse(JSON.stringify(parentCategoriesJson));
+		parentBrands=JSON.parse(JSON.stringify(parentBrandsJson));
 
-	var product=await productModelRef.find({subcategory:req.body.subbrand,brand:req.body.brand});
-	product=JSON.parse(JSON.stringify(product));
-	//console.log(product);
-	res.render('home',{
-		product:product,
-		userInfo:userInfo,
-		userName:req.session.user.name,
-		parentCategories:parentCategories,
-		parentBrands:parentBrands,
-	});
+		var product=await productModelRef.find({subcategory:req.body.subbrand,brand:req.body.brand});
+		product=JSON.parse(JSON.stringify(product));
+		//console.log(product);
+		res.render('home',{
+			product:product,
+			userInfo:userInfo,
+			userName:req.session.user.name,
+			parentCategories:parentCategories,
+			parentBrands:parentBrands
+		});
 	}
 	else
 	{
@@ -715,9 +712,9 @@ app.get('/home/buyproduct',async function(req,res){
 
 app.post('/home/buyproduct/order',urlencodedParser,async function(req,res){
 	if(req.session&&req.session.user){
-	var timestamp=Date.now(); //returns the timestamp in milliseconds.
-	var pid=await productModelRef.findOne({name:req.body.pname}).select('_id');
-	var orderObj=new orderModelRef({
+	var timestamp = Date.now(); //returns the timestamp in milliseconds.
+	var pid = await productModelRef.findOne({name:req.body.pname}).select('_id');
+	var orderObj = new orderModelRef({
 		email:req.session.user.email,
 		products:[{pid:pid,price:req.body.total,qty:req.body.qty,size:req.body.size}],
 		payStatus:"completed",
@@ -740,26 +737,23 @@ app.post('/home/buyproduct/order',urlencodedParser,async function(req,res){
 app.post('/home/buyproduct/orders',urlencodedParser,async function(req,res){
 	
 	if(req.session&&req.session.user){
-	var timestamp=Date.now(); //returns the timestamp in milliseconds.
-	var products=await cartModelRef.findOne({email:req.session.user.email});
-	var orderObj=new orderModelRef({
-		email:req.session.user.email,
-		products:products.products,
-		payStatus:"completed",
-		timestamp:timestamp
-	});
-	
-	orderObj.save(function(err,orderModel){
-		if(err){
-			throw err;
-		}
-		else{
-			var x=orderModel._id;
-			console.log(x);
-			var transid=querystring.stringify({"tid": 'x'}); 
-			res.redirect('/home/payment/transid?'+transid);
-		}
-	});
+		var timestamp = Date.now(); //returns the timestamp in milliseconds.
+		var orderObj = new orderModelRef({
+			email:req.session.user.email,
+			payStatus:"completed",
+			timestamp:timestamp
+		});
+		orderObj.save(function(err,orderModel){
+			if(err){
+				throw err;
+			}
+			else{
+				var x=orderModel._id;
+				console.log(x);
+				var transid=querystring.stringify({"tid": 'x'}); 
+				res.redirect('/home/payment/transid?'+transid);
+			}
+		});
 	}
 	else{
 		res.redirect('/login');
@@ -845,4 +839,5 @@ app.get('/home/search',async function(req,res){
 	
 		
 });
-app.listen(3000);
+var port = process.env.PORT || 3000;
+app.listen(port);

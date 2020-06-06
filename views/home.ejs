@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
     
-
+    <link rel="shortcut icon" href="../logo/logo.png">
     <style type="text/css">
     	#header{
     		position: fixed;
@@ -37,8 +37,7 @@
     		margin-left: 85vw;
     		margin-top:-2.5vh;
     		color:black;
-    		font-size:2.2vmin;
-    		z-index: +1;
+    		font-size:1.2vw;
     		border: none;
     		background-color: #3CB371;
     		color: white;
@@ -81,32 +80,39 @@
     		height:40%;
     		margin:4%;
     		padding:1%;
-    		border:1px solid lightgrey;
-    		box-shadow:5px 5px 5px 1px grey;
+    		border:0.1vmin solid lightgrey;
+    		box-shadow:0.5vmin 0.5vmin 0.5vmin 0.2vmin grey;
     	}
     	#catHead{
-    		position: relative;
-    		left:2%;
-    		margin-top:3%;
-    		font-family: "Comic Sans MS", cursive, sans-serif;
-    		font-weight: bold;
-    	}
-    	.category{
-    		position: relative;
-    	}
-    	#brandHead{
-    		position: relative;
-    		left:2%;
-    		margin-top:5%;
-    		font-family: "Comic Sans MS", cursive, sans-serif;
-    		font-weight: bold;
-    	}
+            position: relative;
+            text-align: center;
+            padding: 1vmin;
+            border: 1vmin solid #3CB371;
+            margin-top:3%;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-weight: bold;
+            font-size: 2vmin;
+        }
+        .category{
+            position: relative;
+        }
+        #brandHead{
+            position: relative;
+            margin-top: 11vmin;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-weight: bold;
+            text-align: center;
+            padding: 1vmin; 
+            border: 1vmin solid #3CB371; 
+            font-size: 2vmin;
+        }
     	.category{
     		position: relative;
     	}
     	
     	*:focus{
         outline:none;
+        word-break: break-all;
        }
        body{
         overflow-x: hidden;
@@ -183,24 +189,20 @@
 			<% if(product.length) { %>
 			    <% for(var i=0;i< product.length;i++) { %>
 			    	<div class="productBox">
-				    	<img src="/productImages/<%= product[i].image %>" style="width:250px;height:250px">
+				    	<img src="/productImages/<%= product[i].image %>" style="width:20vmin;height:20vmin">
 				    	<form action="/home/product" method="get" target="_blank">
-				    		<button style="font-size:120%;border:none;background-color:white;color:#3CB371;" type="submit" name="product" value="<%= product[i].name %>"><%= product[i].name %></button>
+				    		<button style="font-size:3vmin;border:none;background-color:white;color:#3CB371;" type="submit" name="product" value="<%= product[i].name %>"><%= product[i].name %></button>
 				    	</form>
-				    	<p style="font-size:80%;padding:1%;">Tags: <%= product[i].keywords %></p>
+				    	<p style="font-size:80%;padding:1%;word-break:break-word;">Tags: <%= product[i].keywords %></p>
 				    </div>
 			   <% } %>
                 <% } else { %>
-              <p style="margin:10%;font-size:150%;">Sorry, No Products available for your search :(</p>
+              <p style="margin:10%;font-size:5vmin;">Sorry, No Products available for your search :(</p>
             <% } %>
 		</div>
 	</div>
 	
 </body>
 <script type="text/javascript">
-	$(document).ready(function(){
-		
-	})
-
 </script>
 </html>
