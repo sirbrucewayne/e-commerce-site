@@ -2,8 +2,9 @@
 ADBMS project
 
 ## Setup
-> sudo apt-get install nodejs
-> npm install mongoose
-> create database shoppingdb
-
+````
+sudo apt-get install nodejs <br>
+npm install mongoose <br>
+create database shoppingdb <br>
+````
 > run `node app.js`
